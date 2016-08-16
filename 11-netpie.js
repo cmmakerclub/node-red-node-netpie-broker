@@ -53,7 +53,7 @@ module.exports = function (RED) {
 
     function NETPIEInNode(config) {
         RED.nodes.createNode(this, config);
-        console.log('NETPIE-IN Created');
+        console.log("netpie out node created");
         this.appKey = config.appId;
         this.appSecret = config.appSecret;
         this.appId = config.appId;
@@ -87,37 +87,27 @@ module.exports = function (RED) {
 
     function NETPIEOutNode(config) {
         RED.nodes.createNode(this, config);
-        console.log("OUT NODE", config);
         var node = this;
 
-        initMicrogear(config, node);
-
+        console.log("netpie out node created");
         node.status({fill: "green", shape: "dot", text: "common.status.connected"});
 
+        initMicrogear(config, node);
         try {
             node.status({fill: "yellow", shape: "dot", text: "common.status.connecting"});
             node.microgear.connect(config.appId);
         }
         catch (ex) {
-            console.log(ex);
+            node.error(ex);
         }
 
         this.on("input", function (msg) {
-
-            // var topic = "/" + config.appId + "/gearname/" + config.targetGearName;
-            // console.log("topic = ", topic, msg);
-            // node.microgear.publish("/gearname/" + config.targetGearName, msg.payload, { }, function() {
-            //    console.log("published !", arguments);
-            // });
-            // console.log("type = ",  typeof (msg.payload));
-
-
-            console.log("INPUT OUT NODE: ", msg, config);
             var out = String(msg.raw_payload);
             node.microgear.chat(config.targetGearName, out, {retain: false}, function () {
                 console.log("published !", arguments);
             });
         });
+
         this.on("close", function () {
             console.log('NETPIE-IN Closed');
             this.status({fill: "red", shape: "ring", text: "disconnected"});
