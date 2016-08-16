@@ -26,10 +26,12 @@ module.exports = function (RED) {
             secret: config.appSecret
         });
 
+        node.microgear.setCachePath(node.id + ".cache");
         node.microgear.on('connected', function () {
-            console.log('Connected...');
-            node.microgear.setAlias(config.gearname);
-            node.microgear.subscribe("/gearname/#", function () { });
+            console.log(node.id + ' is connected...');
+            node.microgear.setName(config.gearName);
+            node.microgear.setAlias(node.category+"-"+config.gearName);
+            // node.microgear.subscribe("/gearname/#", function () { });
             node.status({fill: "green", shape: "dot", text: "common.status.connected"});
         });
 
@@ -37,13 +39,14 @@ module.exports = function (RED) {
             console.log('incoming : ' + topic + ' : ' + body);
             var obj = {
                 payload: new String(body),
+                raw_payload: body,
                 topic: topic
             };
             node.send(obj);
         });
 
         node.microgear.on('closed', function () {
-            this.status({fill:"red",shape:"ring",text:"disconnected"});
+            this.status({fill: "red", shape: "ring", text: "disconnected"});
             console.log('Closed...');
         });
     };
@@ -54,6 +57,7 @@ module.exports = function (RED) {
         this.appKey = config.appId;
         this.appSecret = config.appSecret;
         this.appId = config.appId;
+        this.gearName = config.gearName;
         var node = this;
 
         initMicrogear(config, node);
@@ -72,9 +76,12 @@ module.exports = function (RED) {
 
         this.on("close", function (done) {
             console.log('NETPIE-IN Closed');
-            this.status({fill:"red",shape:"ring",text:"disconnected"});
-            node.microgear.disconnect(function () { /* never has been called */ });
-            setTimeout(function() { done(); }, 200);
+            this.status({fill: "red", shape: "ring", text: "disconnected"});
+            node.microgear.disconnect(function () { /* never has been called */
+            });
+            setTimeout(function () {
+                done();
+            }, 200);
         });
     }
 
@@ -82,9 +89,40 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         console.log("OUT NODE", config);
         var node = this;
-        node.appKey = "test";
-        node.appSecret = "test";
-        node.appId = "test";
+
+        initMicrogear(config, node);
+
+        node.status({fill: "green", shape: "dot", text: "common.status.connected"});
+
+        try {
+            node.status({fill: "yellow", shape: "dot", text: "common.status.connecting"});
+            node.microgear.connect(config.appId);
+        }
+        catch (ex) {
+            console.log(ex);
+        }
+
+        this.on("input", function (msg) {
+
+            // var topic = "/" + config.appId + "/gearname/" + config.targetGearName;
+            // console.log("topic = ", topic, msg);
+            // node.microgear.publish("/gearname/" + config.targetGearName, msg.payload, { }, function() {
+            //    console.log("published !", arguments);
+            // });
+            // console.log("type = ",  typeof (msg.payload));
+
+
+            console.log("INPUT OUT NODE: ", msg, config);
+            var out = String(msg.raw_payload);
+            node.microgear.chat(config.targetGearName, out, {retain: false}, function () {
+                console.log("published !", arguments);
+            });
+        });
+        this.on("close", function () {
+            console.log('NETPIE-IN Closed');
+            this.status({fill: "red", shape: "ring", text: "disconnected"});
+            node.microgear.disconnect(function () { /* never has been called */ });
+        });
     }
 
     RED.nodes.registerType("netpie-in", NETPIEInNode);

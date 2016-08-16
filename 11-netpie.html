@@ -27,9 +27,10 @@
     </div>
 
     <div class="form-row">
-        <label for="node-input-gearnamee"><i class="fa fa-tasks"></i> <span data-i18n="common.label.gearname">gearname</span></label>
-        <input type="text" id="node-input-gearname" data-i18n="[placeholder]common.label.gearname">
+        <label for="node-input-gearName"><i class="fa fa-tasks"></i> <span data-i18n="common.label.gearName">gearName</span></label>
+        <input type="text" id="node-input-gearName" data-i18n="[placeholder]common.label.gearName">
     </div>
+
 </script>
 
 <script type="text/x-red" data-template-name="netpie-out">
@@ -47,28 +48,35 @@
         <input type="text" id="node-input-appSecret" data-i18n="[placeholder]common.label.appSecret">
     </div>
 
-    <div class="form-row">
-        <label for="node-input-gearnamee"><i class="fa fa-tasks"></i> <span data-i18n="common.label.gearname">gearname</span></label>
-        <input type="text" id="node-input-gearname" data-i18n="[placeholder]common.label.gearname">
+    <div class="form-row" style="display:none">
+        <label for="node-input-gearName"><i class="fa fa-tasks"></i> <span data-i18n="common.label.gearName">gearName</span></label>
+        <input type="text" id="node-input-gearName" data-i18n="[placeholder]common.label.gearName">
     </div>
+
+    <div class="form-row">
+        <label for="node-input-targetGearName"><i class="fa fa-tasks"></i> <span data-i18n="common.label.targetGearName">gearName</span></label>
+        <input type="text" id="node-input-targetGearName" data-i18n="[placeholder]common.label.targetGearName">
+    </div>
+    <div class="form-tips"><span data-i18n="netpie.tip">Tip: Leave target blank if you want to set them via msg properties.</span></div>
+
 </script>
 
 <script type="text/javascript">
     RED.nodes.registerType('netpie-in', {
         category: 'input',
         defaults: {
-            appId: { value: "" },
-            appKey: { value: "" },
-            appSecret: { value: "" },
-            gearname: { value: "" },
-            name: {value: ""}
+            appId: {value: ""},
+            appKey: {value: ""},
+            appSecret: {value: ""},
+            name: {value: ""},
+            gearName: {value: ""}
         },
         color: "#FFAAAA",
         inputs: 0,
         outputs: 1,
         icon: "bridge.png",
         label: function () {
-            return this.name || this.appKey || "netpie in";
+            return this.gearName + " | " + (this.name || this.appKey || "netpie in");
         },
 
         labelStyle: function () {
@@ -85,18 +93,19 @@
     RED.nodes.registerType('netpie-out', {
         category: 'output',
         defaults: {
-            appId: { value: "" },
-            appKey: { value: "" },
-            appSecret: { value: "" },
-            gearname: { value: "" },
-            name: {value: ""}
+            appId: {value: ""},
+            appKey: {value: ""},
+            appSecret: {value: ""},
+            name: {value: ""},
+            gearName: {value: "outgear"},
+            targetGearName: {value: ""}
         },
         color: "#FFAAAA",
         inputs: 1,
         outputs: 0,
         icon: "bridge.png",
         label: function () {
-            return this.name || this.appKey || "netpie out";
+            return this.targetGearName + " | " + (this.name || this.appKey || "netpie out");
         },
 
         labelStyle: function () {
@@ -107,4 +116,17 @@
             console.log("ON EDIT PREPARE");
         }
     });
+</script>
+
+<script type="text/x-red" data-help-name="netpie out">
+    <p>Connects to a MQTT broker and publishes messages.</p>
+    <p><code>msg.payload</code> is used as the payload of the published message.
+    If it contains an Object it will be converted to JSON before being sent.
+    </p>
+    <p>The topic used can be configured in the node or, if left blank, can be set
+       by <code>msg.topic</code>.</p>
+    <p>Likewise the QoS and retain values can be configured in the node or, if left
+       blank, set by <code>msg.qos</code> and <code>msg.retain</code> respectively.
+       By default, messages are published at QoS 0 with the retain flag set to false.</p>
+
 </script>
