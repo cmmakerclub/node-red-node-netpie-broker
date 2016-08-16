@@ -14,16 +14,80 @@
  * limitations under the License.
  **/
 
-module.exports = function(RED) {
-    var mqtt = require("mqtt");
-    var microgear = require("microgear");
+module.exports = function (RED) {
+    // var mqtt = require("mqtt");
+    var MicroGear = require("microgear");
     var util = require("util");
     var isUtf8 = require('is-utf8');
 
-    RED.nodes.registerType("netpie-broker",MQTTBrokerNode,{
-        credentials: {
-            user: {type:"text"},
-            password: {type: "password"}
+    var initMicrogear = function (config, node) {
+        node.microgear = MicroGear.create({
+            key: config.appKey,
+            secret: config.appSecret
+        });
+
+        node.microgear.on('connected', function () {
+            console.log('Connected...');
+            node.microgear.setAlias(config.gearname);
+            node.microgear.subscribe("/gearname/#", function () { });
+            node.status({fill: "green", shape: "dot", text: "common.status.connected"});
+        });
+
+        node.microgear.on('message', function (topic, body) {
+            console.log('incoming : ' + topic + ' : ' + body);
+            var obj = {
+                payload: new String(body),
+                topic: topic
+            };
+            node.send(obj);
+        });
+
+        node.microgear.on('closed', function () {
+            this.status({fill:"red",shape:"ring",text:"disconnected"});
+            console.log('Closed...');
+        });
+    };
+
+    function NETPIEInNode(config) {
+        RED.nodes.createNode(this, config);
+        console.log('NETPIE-IN Created');
+        this.appKey = config.appId;
+        this.appSecret = config.appSecret;
+        this.appId = config.appId;
+        var node = this;
+
+        initMicrogear(config, node);
+
+        try {
+            node.status({fill: "yellow", shape: "dot", text: "common.status.connecting"});
+            node.microgear.connect(config.appId);
         }
-    });
+        catch (ex) {
+            console.log(ex);
+        }
+
+        this.on("input", function (msg) {
+            console.log("console.log", "HELLO");
+        });
+
+        this.on("close", function (done) {
+            console.log('NETPIE-IN Closed');
+            this.status({fill:"red",shape:"ring",text:"disconnected"});
+            node.microgear.disconnect(function () { /* never has been called */ });
+            setTimeout(function() { done(); }, 200);
+        });
+    }
+
+    function NETPIEOutNode(config) {
+        RED.nodes.createNode(this, config);
+        console.log("OUT NODE", config);
+        var node = this;
+        node.appKey = "test";
+        node.appSecret = "test";
+        node.appId = "test";
+    }
+
+    RED.nodes.registerType("netpie-in", NETPIEInNode);
+    RED.nodes.registerType("netpie-out", NETPIEOutNode);
+
 };

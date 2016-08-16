@@ -13,23 +13,98 @@
 
 <script type="text/x-red" data-template-name="netpie-in">
     <div class="form-row">
-        <label for="node-input-broker"><i class="fa fa-globe"></i> <span data-i18n="mqtt.label.broker"></span></label>
-        <input type="text" id="node-input-broker">
-    </div>
-    <div class="form-row">
-        <label for="node-input-appId"><i class="fa fa-tasks"></i> <span data-i18n="common.label.appId"></span></label>
+        <label for="node-input-appId"><i class="fa fa-tasks"></i> <span data-i18n="common.label.appId">AppId</span></label>
         <input type="text" id="node-input-appId" data-i18n="[placeholder]common.label.appId">
     </div>
     <div class="form-row">
-        <label for="node-input-qos"><i class="fa fa-empire"></i> <span data-i18n="mqtt.label.qos"></span></label>
-        <select id="node-input-qos" style="width:125px !important">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-        </select>
+        <label for="node-input-appKey"><i class="fa fa-tasks"></i> <span data-i18n="common.label.appKey">AppKey</span></label>
+        <input type="text" id="node-input-appKey" data-i18n="[placeholder]common.label.appKey">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-appSecret"><i class="fa fa-tasks"></i> <span data-i18n="common.label.appSecret">appSecret</span></label>
+        <input type="text" id="node-input-appSecret" data-i18n="[placeholder]common.label.appSecret">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-gearnamee"><i class="fa fa-tasks"></i> <span data-i18n="common.label.gearname">gearname</span></label>
+        <input type="text" id="node-input-gearname" data-i18n="[placeholder]common.label.gearname">
+    </div>
+</script>
+
+<script type="text/x-red" data-template-name="netpie-out">
+    <div class="form-row">
+        <label for="node-input-appId"><i class="fa fa-tasks"></i> <span data-i18n="common.label.appId">AppId</span></label>
+        <input type="text" id="node-input-appId" data-i18n="[placeholder]common.label.appId">
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
+        <label for="node-input-appKey"><i class="fa fa-tasks"></i> <span data-i18n="common.label.appKey">AppKey</span></label>
+        <input type="text" id="node-input-appKey" data-i18n="[placeholder]common.label.appKey">
     </div>
+
+    <div class="form-row">
+        <label for="node-input-appSecret"><i class="fa fa-tasks"></i> <span data-i18n="common.label.appSecret">appSecret</span></label>
+        <input type="text" id="node-input-appSecret" data-i18n="[placeholder]common.label.appSecret">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-gearnamee"><i class="fa fa-tasks"></i> <span data-i18n="common.label.gearname">gearname</span></label>
+        <input type="text" id="node-input-gearname" data-i18n="[placeholder]common.label.gearname">
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('netpie-in', {
+        category: 'input',
+        defaults: {
+            appId: { value: "" },
+            appKey: { value: "" },
+            appSecret: { value: "" },
+            gearname: { value: "" },
+            name: {value: ""}
+        },
+        color: "#FFAAAA",
+        inputs: 0,
+        outputs: 1,
+        icon: "bridge.png",
+        label: function () {
+            return this.name || this.appKey || "netpie in";
+        },
+
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
+
+        oneditprepare: function () {
+            console.log("ON EDIT PREPARE");
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('netpie-out', {
+        category: 'output',
+        defaults: {
+            appId: { value: "" },
+            appKey: { value: "" },
+            appSecret: { value: "" },
+            gearname: { value: "" },
+            name: {value: ""}
+        },
+        color: "#FFAAAA",
+        inputs: 1,
+        outputs: 0,
+        icon: "bridge.png",
+        label: function () {
+            return this.name || this.appKey || "netpie out";
+        },
+
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
+
+        oneditprepare: function () {
+            console.log("ON EDIT PREPARE");
+        }
+    });
 </script>
