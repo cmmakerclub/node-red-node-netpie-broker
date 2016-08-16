@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Nat Weerawan",
   "license": "ISC",
   "dependencies": {
     "microgear": "^0.7.1"
