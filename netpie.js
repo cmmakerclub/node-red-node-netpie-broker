@@ -15,10 +15,8 @@
  **/
 
 module.exports = function (RED) {
-    // var mqtt = require("mqtt");
     var MicroGear = require("microgear");
     var util = require("util");
-    var isUtf8 = require('is-utf8');
 
     var initMicrogear = function (config, node) {
         node.microgear = MicroGear.create({
