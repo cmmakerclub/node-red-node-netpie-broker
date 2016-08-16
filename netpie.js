@@ -100,8 +100,7 @@ module.exports = function (RED) {
         }
 
         this.on("input", function (msg) {
-            var out = String(msg.raw_payload);
-            node.microgear.chat(config.targetGearName, out, {retain: false}, function () {
+            node.microgear.chat(config.targetGearName, ""+ (msg.payload), {retain: false}, function () {
                 console.log("published !", arguments);
             });
         });
