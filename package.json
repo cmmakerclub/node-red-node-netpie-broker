@@ -10,5 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "microgear": "^0.7.1"
-  }
+  },
+   "node-red"     : {
+        "nodes": {
+            "netpie": "netpie.js"
+        }
+    } 
 }
