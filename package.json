@@ -4,7 +4,7 @@
     "name": "Nat Weerawan"
   },
   "dependencies": {
-    "microgear": "^0.7.1",
+    "microgear": "https://github.com/NAzT/microgear-nodejs/tarball/master",
     "underscore": "^1.8.3"
   },
   "description": "",
@@ -18,5 +18,5 @@
       "netpie": "netpie.js"
     }
   },
-  "version": "0.0.7"
+  "version": "0.1.0"
 }
