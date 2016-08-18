@@ -17,6 +17,8 @@
 module.exports = function (RED) {
     var MicroGear = require("microgear");
     var util = require("util");
+    var _ = require("underscore");
+    
 
     var initMicrogear = function (config, node) {
         node.microgear = MicroGear.create({
@@ -100,9 +102,21 @@ module.exports = function (RED) {
         }
 
         this.on("input", function (msg) {
-            node.microgear.chat(config.targetGearName, ""+ (msg.payload), {retain: false}, function () {
-                console.log("published !", arguments);
-            });
+            var payload = msg.payload;
+            var payload_type = Object.prototype.toString.call(payload);
+            var vstr = "";
+
+            if (payload_type == "[object String]") {
+                node.microgear.chat(config.targetGearName, payload, {retain: false}, function () {
+                    console.log("published !", arguments);
+                });
+            }
+            else if (payload_type == "[object Object]") {
+                vstr = _.values(payload).join('');
+                node.microgear.chat(config.targetGearName, vstr, {retain: false}, function () {
+                    console.log("published !", arguments);
+                });
+            }
         });
 
         this.on("close", function () {
@@ -114,5 +128,4 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("netpie-in", NETPIEInNode);
     RED.nodes.registerType("netpie-out", NETPIEOutNode);
-
 };
