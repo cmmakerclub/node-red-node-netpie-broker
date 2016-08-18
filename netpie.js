@@ -30,7 +30,10 @@ module.exports = function (RED) {
             console.log(node.id + ' is connected...');
             // node.microgear.setName(config.gearName);
             // node.microgear.setAlias(node.category+"-"+config.gearName);
-            node.microgear.subscribe("/gearname/"+ config.gearName, function () { });
+            var topic = "/gearname/"+ config.gearName;
+            node.microgear.subscribe(topic, function () {
+                console.log('subscribed to ', topic);
+            });
             node.status({fill: "green", shape: "dot", text: "common.status.connected"});
         });
 
