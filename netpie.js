@@ -112,7 +112,10 @@ module.exports = function (RED) {
                 });
             }
             else if (payload_type == "[object Object]") {
+                console.log(msg);
+                console.log("in vstr: ", config);
                 vstr = _.values(payload).join('');
+                console.log(vstr, Object.prototype.toString.call(vstr));
                 node.microgear.chat(config.targetGearName, vstr, {retain: false}, function () {
                     console.log("published !", arguments);
                 });
