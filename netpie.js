@@ -38,9 +38,9 @@ module.exports = function (RED) {
         });
 
         node.microgear.on('message', function (topic, body) {
-            console.log('incoming : ' + topic + ' : ' + body);
+            console.log('incoming : ' + topic + ' : ' + body.toString());
             var obj = {
-                payload: new String(body),
+                payload: (body.toString()),
                 raw_payload: body,
                 topic: topic
             };
