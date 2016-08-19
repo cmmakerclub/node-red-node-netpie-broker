@@ -123,7 +123,7 @@ module.exports = function (RED) {
                 else {
                     console.log(config.targetGearName, ">> is pure object...");
                     // console.log("need .message", msg);
-                    if (payload.message) {
+                    if (payload.message || payload.payload) {
                         node.microgear.chat(config.targetGearName, payload.message, {retain: false}, function () {
                             console.log("published !", arguments);
                         });
