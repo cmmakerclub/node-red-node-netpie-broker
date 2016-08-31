@@ -34,7 +34,7 @@ module.exports = function (RED) {
             node.microgear.subscribe(topic, function () {
                 console.log('subscribed to ', topic);
             });
-            node.status({fill: "green", shape: "dot", text: "node-red:common.status.connected"});
+            node.status({fill: "green", shape: "dot", text: "netpie.status.connected"});
         });
 
         node.microgear.on('message', function (topic, body) {
@@ -60,7 +60,7 @@ module.exports = function (RED) {
 
         try {
             initMicrogear(config, node);
-            node.status({fill: "yellow", shape: "dot", text: "node-red:common.status.connecting"});
+            node.status({fill: "yellow", shape: "dot", text: "netpie.status.connecting"});
             node.microgear.connect(config.appId);
         }
         catch (ex) {
@@ -86,11 +86,11 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         var node = this;
 
-        node.status({fill: "green", shape: "dot", text: "node-red:common.status.connected"});
+        node.status({fill: "green", shape: "dot", text: "netpie.status.connected"});
 
         initMicrogear(config, node);
         try {
-            node.status({fill: "yellow", shape: "dot", text: "node-red:common.status.connecting"});
+            node.status({fill: "yellow", shape: "dot", text: "netpie.status.connecting"});
             node.microgear.connect(config.appId);
         }
         catch (ex) {

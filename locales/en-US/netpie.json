@@ -1,0 +1,14 @@
+{
+  "netpie": {
+	  "status": {
+      "connecting": "Connecting",
+      "fail": "Failed",
+      "disconnect": "Disconnected", 
+    },
+    "label": {
+      "appKey": "App Key",
+      "appId": "App Id",
+      "appSecret": "App Secret",
+    }
+  }
+}
