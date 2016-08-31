@@ -50,14 +50,6 @@ module.exports = function(RED) {
         this.queue = [];
         this.subscriptions = {};
 
-        if (n.birthTopic) {
-            this.birthMessage = {
-                topic: n.birthTopic,
-                payload: n.birthPayload || "",
-                qos: Number(n.birthQos||0),
-                retain: n.birthRetain=="true"|| n.birthRetain===true
-            };
-        }
 
         if (this.credentials) {
             this.username = this.credentials.user;
@@ -127,15 +119,6 @@ module.exports = function(RED) {
             this.options.rejectUnauthorized = (this.verifyservercert == "true" || this.verifyservercert === true);
         }
 
-        if (n.willTopic) {
-            this.options.will = {
-                topic: n.willTopic,
-                payload: n.willPayload || "",
-                qos: Number(n.willQos||0),
-                retain: n.willRetain=="true"|| n.willRetain===true
-            };
-        }
-
         // Define functions called by MQTT in and out nodes
         var node = this;
         this.users = {};
@@ -197,10 +180,6 @@ module.exports = function(RED) {
                         }
                     }
 
-                    // Send any birth message
-                    if (node.birthMessage) {
-                        node.publish(node.birthMessage);
-                    }
                 });
                 node.client.on("reconnect", function() {
                     for (var id in node.users) {
