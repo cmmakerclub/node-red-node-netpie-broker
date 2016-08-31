@@ -34,7 +34,7 @@ module.exports = function (RED) {
             node.microgear.subscribe(topic, function () {
                 console.log('subscribed to ', topic);
             });
-            node.status({fill: "green", shape: "dot", text: "common.status.connected"});
+            node.status({fill: "green", shape: "dot", text: "node-red:common.status.connected"});
         });
 
         node.microgear.on('message', function (topic, body) {
@@ -60,7 +60,7 @@ module.exports = function (RED) {
 
         try {
             initMicrogear(config, node);
-            node.status({fill: "yellow", shape: "dot", text: "common.status.connecting"});
+            node.status({fill: "yellow", shape: "dot", text: "node-red:common.status.connecting"});
             node.microgear.connect(config.appId);
         }
         catch (ex) {
@@ -69,11 +69,10 @@ module.exports = function (RED) {
         }
 
         this.on("input", function (msg) {
-            console.log("console.log", "HELLO");
+
         });
 
         this.on("close", function (done) {
-            console.log('NETPIE-IN Closed');
             this.status({fill: "red", shape: "ring", text: "disconnected"});
             node.microgear.disconnect(function () { /* never has been called */ });
 
@@ -87,12 +86,11 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         var node = this;
 
-        console.log("netpie out node created");
-        node.status({fill: "green", shape: "dot", text: "common.status.connected"});
+        node.status({fill: "green", shape: "dot", text: "node-red:common.status.connected"});
 
         initMicrogear(config, node);
         try {
-            node.status({fill: "yellow", shape: "dot", text: "common.status.connecting"});
+            node.status({fill: "yellow", shape: "dot", text: "node-red:common.status.connecting"});
             node.microgear.connect(config.appId);
         }
         catch (ex) {
@@ -121,8 +119,7 @@ module.exports = function (RED) {
                     });
                 }
                 else {
-                    console.log(config.targetGearName, ">> is pure object...");
-                    // console.log("need .message", msg);
+                    //console.log(config.targetGearName, ">> is pure object...");
                     if (payload.message || payload.payload) {
                         node.microgear.chat(config.targetGearName, payload.message, {retain: false}, function () {
                             console.log("published !", arguments);
@@ -137,7 +134,6 @@ module.exports = function (RED) {
         });
 
         this.on("close", function (done) {
-            console.log('NETPIE-IN Closed');
             this.status({fill: "red", shape: "ring", text: "disconnected"});
             node.microgear.disconnect(function () { /* never has been called */ });
             setTimeout(function () {
